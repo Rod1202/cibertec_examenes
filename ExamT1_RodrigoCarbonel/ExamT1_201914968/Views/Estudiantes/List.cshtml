@@ -1,0 +1,113 @@
+﻿@model EstudiantesListViewModel;
+@{
+    ViewData["Title"] = "List";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Tabla con Bootstrap</title>
+    <!-- Agrega el enlace a la biblioteca Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+
+    <!-- Imagen random en la parte superior -->
+    <div class="container mt-3 d-flex justify-content-center">
+        <img src="https://i.postimg.cc/4dZv94WB/Logo-Banner.jpg" class="img-fluid" alt="Imagen random">
+    </div>
+
+    <!-- Tabla con Bootstrap -->
+    <div class="container mt-3">
+        <table class="table" id="t1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>DNI</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Correo electrónico</th>
+                    <th>Celular</th>
+                    <th>Nombre de contacto (Emergencia)</th>
+                    <th>Telefono contacto (Emergencia)</th>
+                    <th>Acciones</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                @foreach (var item in Model.List)
+                {
+                   
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.LastName</td>
+                    <td>@item.DNI</td>
+                    <td>@item.BirthDate</td>
+                    <td>@item.Email</td>
+                    <td>@item.Phone</td>
+                    <td>@item.Contact</td>
+                    <td>@item.ContactNumber</td>
+                    <td>
+                        <div class="btn-group">    
+                            <a class="btn btn-warning btn-sm mr-2" asp-action="Edit" asp-controller="Estudiantes" asp-route-id="@item.Id">Editar</a>
+                                <a onclick="DeleteEstudiante(@item.Id)" class="btn btn-danger btn-sm">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+               
+                }
+                
+            </tbody>
+
+        </table>
+        
+    </div>
+    <div class="row">
+        <div class="md-12"> 
+            <a class="btn btn-primary" asp-action="Add" asp-controller="Estudiantes">
+                Añadir Nuevo
+            </a>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script type="text/javascript">
+            const DeleteEstudiante = (id) => {
+                if (!confirm("Esta seguro que desea eliminar el registro?")) return;
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("DeleteEstudiante","Estudiantes")' + '/' + id,
+                    success: function (data) {
+                        alert(data);
+                        window.location.href = window.location.href;
+                    },
+                    error: function () {
+                        alert('Algo salio mal');
+                    }
+                });
+            };
+        </script>
+    }
+
+    <!-- Agrega el enlace a la biblioteca Bootstrap JS y Popper.js (necesario para algunos componentes de Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            new DataTable('#t1');
+            $('#miTabla_filter').addClass('ml-auto');
+        });
+    </script>
+
+
+</body>
+</html>
+
+
+
