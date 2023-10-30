@@ -1,0 +1,114 @@
+﻿@model EstudiantesListViewModel;
+@{
+    ViewData["Title"] = "List";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Tabla con Bootstrap</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+
+
+    <div class="container mt-3 d-flex justify-content-center">
+        <img src="https://i.postimg.cc/4dZv94WB/Logo-Banner.jpg" class="img-fluid" alt="Imagen random">
+    </div>
+
+
+    <div class="container mt-3">
+        <table class="table" id="t1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>DNI</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Notas</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                @foreach (var item in Model.List)
+                {
+
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.LastName</td>
+                        <td>@item.DNI</td>
+                        <td>@item.BirthDate</td>
+                        <td>
+                            @if (item.NotasTemporales != null && item.NotasTemporales.Any())
+                            {
+                                foreach (var nota in item.NotasTemporales)
+                                {
+                                    <div>
+                                        <span>Curso: @nota.Curso</span>
+                                        <span>Nota: @nota.Nota</span>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div>No hay notas</div>
+                            }
+                        </td>
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+    <div class="row">
+        <div class="md-12">
+            <a class="btn btn-primary" asp-action="Add" asp-controller="Estudiantes">
+                Añadir Nuevo
+            </a>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script type="text/javascript">
+            const DeleteEstudiante = (id) => {
+                if (!confirm("Esta seguro que desea eliminar el registro?")) return;
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("DeleteEstudiante","Estudiantes")' + '/' + id,
+                    success: function (data) {
+                        alert(data);
+                        window.location.href = window.location.href;
+                    },
+                    error: function () {
+                        alert('Algo salio mal');
+                    }
+                });
+            };
+        </script>
+    }
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            new DataTable('#t1');
+            $('#miTabla_filter').addClass('ml-auto');
+        });
+    </script>
+
+
+</body>
+</html>
+
+
+

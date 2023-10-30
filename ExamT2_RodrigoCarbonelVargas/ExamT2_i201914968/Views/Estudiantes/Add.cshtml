@@ -1,0 +1,118 @@
+﻿@model EstudiantesViewModel;
+@{
+    ViewData["Title"] = "Add";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Notas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <style>
+        .custom-container {
+            max-width: 700px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <main class="container custom-container">
+        <div class="text-center mb-5">
+            <h2>INFORMACIÓN GENERAL</h2>
+        </div>
+    <form asp-action="AddSavedAction" method="POST">
+            <div class="mb-3">
+                <label asp-for="DNI" class="form-label">DNI</label>
+                <input asp-for="DNI" type="text" class="form-control" placeholder="Ingrese DNI">
+            </div>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nombre</label>
+                <input asp-for="Name" type="text" class="form-control" placeholder="Ingrese Nombre">
+            </div>
+            <div class="mb-3">
+                <label asp-for="LastName" class="form-label">Apellido</label>
+                <input asp-for="LastName" type="text" class="form-control" placeholder="Ingrese Apellido">
+            </div>
+            <div class="mb-3">
+                <label asp-for="BirthDate" class="form-label">Fecha de Nacimiento</label>
+                <input asp-for="BirthDate" type="date" class="form-control" id="FechaNacimiento" name="FechaNacimiento">
+            </div>
+            <div class="text-center mb-3">
+                <h2>NOTAS</h2>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Curso</label>
+                <input type="text" class="form-control" id="nombreCurso" name="Curso" placeholder="Ingrese Curso">
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="Nota" class="form-label text-left">Nota</label>
+                    <input type="text" class="form-control" id="calificacion" name="Nota" placeholder="Ingrese Nota">
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-primary mt-4" onclick="agregarNotaTemporal()">Añadir</button>
+                </div>
+            </div>
+            <div class="text-center mb-7">
+                <h4>NOTAS TEMPORALES</h4>
+            </div>
+            <div id="notasTemporales">
+                @foreach (var nota in Model.NotasTemporales)
+                {
+                    <div class="nota-temporal">
+                        <span style="display: inline-block;">Curso: @nota.Curso</span>
+                        <span style="display: inline-block;">  //  </span>
+                        <span style="display: inline-block;">Nota: @nota.Nota</span>
+                    </div>
+                }
+            </div>
+            <input type="hidden" name="NotasTemporalesJson" id="notasTemporalesJson" />
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mt-4 col-md-2" onclick="prepararNotasTemporales()">Grabar</button>
+                <a class="btn btn-danger mt-4 col-md-2" asp-action="List" asp-controller="Estudiantes">Cancelar</a>
+            </div>
+    </form>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0v8FqFjcJ6pajs/rfdfs3SO+kD4Ck5BdPtF+to8xMp9MvcJ48nVm6jWV7Xm6+/4F2Q1JWmY" crossorigin="anonymous"></script>
+    <script>
+        var notasTemporales = @Html.Raw(Json.Serialize(Model.NotasTemporales));
+
+        function agregarNotaTemporal() {
+            var nombreCurso = document.getElementById("nombreCurso").value;
+            var calificacion = document.getElementById("calificacion").value;
+
+            var notaTemporal = {
+                NombreCurso: nombreCurso,
+                Calificacion: calificacion
+            };
+
+            notasTemporales.push(notaTemporal);
+            actualizarVistaNotasTemporales();
+        }
+
+        function actualizarVistaNotasTemporales() {
+            var notasTemporalesDiv = document.getElementById("notasTemporales");
+            notasTemporalesDiv.innerHTML = '';
+
+            notasTemporales.forEach(function (nota) {
+                var notaHtml = '<div class="nota-temporal">';
+                notaHtml += '<p>Curso: ' + nota.NombreCurso + '</p>';
+                notaHtml += '<p>Nota: ' + nota.Calificacion + '</p>';
+                notaHtml += '</div>';
+                notasTemporalesDiv.innerHTML += notaHtml;
+            });
+        }
+        function prepararNotasTemporales() {
+            document.getElementById("notasTemporalesJson").value = JSON.stringify(notasTemporales);
+
+
+            document.querySelector("form").submit();
+        }
+    </script>
+</body>
+</html>
+
+
+
